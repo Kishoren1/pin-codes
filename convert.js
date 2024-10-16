@@ -21,7 +21,14 @@ fs.createReadStream(inputFile)
   .pipe(csv())
   .on("data", (data) => {
     pincodes.push(data.pincode);
-    officeNames.push(data.officename);
+
+    const cleanedName = data.officename
+      .replace(/ B\.O\.?/g, "")
+      .replace(/ S\.O\.?/g, "")
+      .replace(/ H\.O\.?/g, "")
+      .trim();
+
+    officeNames.push(cleanedName);
   })
   .on("end", () => {
     fs.mkdirSync(path.dirname(pincodeOutputFile), { recursive: true });
